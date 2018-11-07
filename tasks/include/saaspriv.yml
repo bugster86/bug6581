@@ -1,0 +1,10 @@
+- name: "ping {{ logserver_saas }}"
+  shell: "ping -c 1 {{ logserver_saas }}"
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  register: ping_log_server
+
+- block:
+  - fail: msg="Da questo server non posso raggiungere con il ping {{ logserver_saas }}"
+  when: ping_log_server.rc != 0
