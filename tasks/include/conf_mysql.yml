@@ -1,0 +1,23 @@
+- name: verifico che nel file di configurazione non sia già presente la configurazione per l'audit
+  shell: "grep server_audit {{ item }}/my.cnf  | grep -v "#" "
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  register: configurazione_presente
+
+- name: "Aggiungo al file  di configurazione {{ item }}/my.cnf le direttive per l'audit"
+  blockinfile:
+    backup: true
+    marker: "# {mark} BUG_6581"
+    path: {{ item }}/my.cnf
+    insertafter: '[mysqld]'
+    block: |
+    plugin_load                    = server_audit.so
+    server_audit_events            = 'CONNECT'
+    server_audit_output_type       = SYSLOG
+    server_audit_syslog_facility   = LOG_LOCAL1
+    server_audit_logging           = ON
+    server_audit_syslog_priority   = LOG_INFO
+
+
+  when: configurazione_presente.rc != 0

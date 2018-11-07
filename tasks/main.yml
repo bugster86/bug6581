@@ -11,3 +11,14 @@
 - name: controllo raggiungibilità .saas.priv
   include: include/saaspriv.yml
   when: inventory_hostname[0:2] == "fw" or inventory_hostname[0:4] == "saas"
+
+- name: "Determino quante istanze di mysql sono presenti sul server {{ inventory_hostname }}"
+  shell: ls -1d /opt/mysql*
+  changed_when: false
+  check_mode: false
+  failed_when: false
+  register: istanze_mysql
+
+- include: include/aggiorna_istanza.yml
+  with_items:
+  - "{{ istanze_mysql.stdout_lines }}"
