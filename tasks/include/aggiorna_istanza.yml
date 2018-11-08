@@ -1,7 +1,7 @@
 - debug: msg="Sto aggiornando l'istanza {{ item }}"
 
 - name: "Controllo se l'istanza {{ item }} è una mysql 5.5"
-  shell: "grep version= {{ item }}/install/mysql/bin/mysql_config | grep "5.5.30" "
+  shell: "grep version= {{ item }}/install/mysql/bin/mysql_config | grep \"5.5.30\" "
   failed_when: false
   changed_when: false
   check_mode: false
