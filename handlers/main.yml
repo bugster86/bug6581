@@ -1,5 +1,6 @@
 ---
 # handlers file for 6581
 # Riavvio il processo syslog rsyslog in base a quale è realmente presente sul sistema
-- include: operation.yml
-  listen: "restart_syslog"
+- name: "restart_syslog"
+  include: operation.yml
+  
