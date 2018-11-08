@@ -18,12 +18,22 @@
 
   # Se ho superato questo block vuol dire che posso fare la mia replace nel file di configurazione principale di rsyslog
 
+- shell: "grep /var/log/messages {{lookup('first_found', configurazione_syslog)}} | grep -v \"#\" |awk '{print $1}'"
+  check_mode: false
+  failed_when: false
+  changed_when: false
+  register: prima
+  vars:
+    configurazione_syslog:
+    - /etc/syslog.conf
+    - /etc/rsyslog.conf
+
 - name: "introduco la direttiva {{ facility | default('local1') }}.none all'interno del file  di configurazione principale di syslog"
   replace:
     backup: true
     path: "{{lookup('first_found', configurazione_syslog)}}"
-    regexp: '^(.*)\t/var/log/messages$'
-    replace: \1;{{ facility | default('local1')}}.none\t/var/log/messages
+    regexp: '^(.*)/var/log/messages$'
+    replace: "{{ prima.stdout }};{{ facility | default('local1')}}.none\t/var/log/messages"
   notify: restart_syslog
   vars:
     configurazione_syslog:
