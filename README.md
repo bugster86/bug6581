@@ -37,5 +37,4 @@ Informazioni Autore
 Martino.Viganò
 Martino.Vigano@enghouse.com
 
-![alt text](http://i.imgur.com/fh2ro.jpg)
-
+![alt text](https://pbs.twimg.com/media/DEjbEx2XsAM-RXu.jpg)
