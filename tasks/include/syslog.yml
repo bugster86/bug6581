@@ -21,7 +21,7 @@
 - name: "introduco la direttiva {{ facility | default(local1) }}.none all'interno del file  di configurazione principale di syslog"
   replace:
     backup: true
-    path: {{lookup('first_found', configurazione_syslog)}}
+    path: "{{lookup('first_found', configurazione_syslog)}}"
     regexp: '^(.*)\t/var/log/messages$'
     replace: '\1;{{ facility | default(1)}}.none\t/var/log/messages'
   notify: restart_syslog
