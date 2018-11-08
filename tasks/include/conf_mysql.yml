@@ -1,5 +1,5 @@
 - name: verifico che nel file di configurazione non sia già presente la configurazione per l'audit
-  shell: "grep server_audit {{ item }}/my.cnf  | grep -v "#" "
+  shell: "grep server_audit {{ item }}/my.cnf  | grep -v \"#\" "
   check_mode: false
   changed_when: false
   failed_when: false
