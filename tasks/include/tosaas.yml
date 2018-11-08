@@ -1,0 +1,12 @@
+- name: "Posiziono il file di configurazione syslog per spedire le loggate a {{ logserver_saas }}:{{ logserver_port}}"
+  template:
+    src: files/syslog_saas.j2
+    dest: "{{lookup('first_found', dir_syslog)}}/audit_mysql.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_syslog
+  vars:
+    dir_syslog:
+    - /etc/syslog.d/
+    - /etc/rsyslog.d/

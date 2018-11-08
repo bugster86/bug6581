@@ -1,0 +1,12 @@
+- name: "Posiziono il file di configurazione syslog per produrre le loggate localmente nel file /var/log/audit_mysql"
+  template:
+    src: files/syslog_local.j2
+    dest: "{{lookup('first_found', dir_syslog)}}/audit_mysql.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_syslog
+  vars:
+    dir_syslog:
+    - /etc/syslog.d/
+    - /etc/rsyslog.d/

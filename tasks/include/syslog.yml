@@ -24,8 +24,17 @@
     path: {{lookup('first_found', configurazione_syslog)}}
     regexp: '^(.*)\t/var/log/messages$'
     replace: '\1;{{ facility | default(1)}}.none\t/var/log/messages'
-  notify: restart_syslog  
+  notify: restart_syslog
   vars:
     configurazione_syslog:
     - /etc/syslog.conf
     - /etc/rsyslog.conf
+
+# In questo caso le loggate devono essere inviate in tcp al server syslog saas sulla porta 518
+- include: tosaas.yml
+  when: inventory_hostname[0:2] == "fw" or inventory_hostname[0:4] == "saas"
+
+# In questo caso le loggate devono essere scritto localmente in un file /var/log/audit_mysql.log e deve essere
+# Predisposto un file di rotate
+- include: local.yml
+  when: not (inventory_hostname[0:2] == "fw" or inventory_hostname[0:4] == "saas")
