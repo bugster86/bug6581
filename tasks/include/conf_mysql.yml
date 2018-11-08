@@ -9,15 +9,15 @@
   blockinfile:
     backup: true
     marker: "# {mark} BUG_6581"
-    path: {{ item }}/my.cnf
+    path: "{{ item }}/my.cnf"
     insertafter: '[mysqld]'
     block: |
-    plugin_load                    = server_audit.so
-    server_audit_events            = 'CONNECT'
-    server_audit_output_type       = SYSLOG
-    server_audit_syslog_facility   = LOG_LOCAL1
-    server_audit_logging           = ON
-    server_audit_syslog_priority   = LOG_INFO
+            plugin_load                    = server_audit.so
+            server_audit_events            = CONNECT
+            server_audit_output_type       = SYSLOG
+            server_audit_syslog_facility   = LOG_LOCAL1
+            server_audit_logging           = ON
+            server_audit_syslog_priority   = LOG_INFO
 
 
   when: configurazione_presente.rc != 0
