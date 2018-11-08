@@ -1,0 +1,31 @@
+- name: controllo che la facility local1 non sia già presente all'interno
+  shell: "grep {{ facility | default(local1) }} {{lookup('first_found', configurazione_syslog)}} "
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  vars:
+    configurazione_syslog:
+    - /etc/syslog.conf
+    - /etc/rsyslog.conf
+  register: check_local1
+
+- block:
+  - debug: msg="Ho già trovato la facility {{ facility | default(local1) }} all'interno della configurazione di syslog"
+  - debug: msg="Per questo server devi rilanciare il comando ansible specificando i parametri facility e FACILITY."
+  - debug: msg="Per esempio -e facility=local2 -e FACILITY=LOG_LOCAL2"
+  - fail: msg="Non procedo oltre su questo server"
+  when: check_local1.rc == 0
+
+  # Se ho superato questo block vuol dire che posso fare la mia replace nel file di configurazione principale di rsyslog
+
+- name: "introduco la direttiva {{ facility | default(local1) }}.none all'interno del file  di configurazione principale di syslog"
+  replace:
+    backup: true
+    path: {{lookup('first_found', configurazione_syslog)}}
+    regexp: '^(.*)\t/var/log/messages$'
+    replace: '\1;{{ facility | default(1)}}.none\t/var/log/messages'
+  notify: restart_syslog  
+  vars:
+    configurazione_syslog:
+    - /etc/syslog.conf
+    - /etc/rsyslog.conf

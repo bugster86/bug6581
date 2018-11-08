@@ -22,3 +22,22 @@
 - include: include/aggiorna_istanza.yml
   with_items:
   - "{{ istanze_mysql.stdout_lines }}"
+
+# Adesso posso caricare direttamente a runtime il plugin
+- name: carico il plugin a runtime per l'istanza mysql
+  shell: mysql -e "INSTALL PLUGIN server_audit SONAME 'server_audit.so';"
+
+- name: recupero il riferimento per eventuali altri istanze mysql
+  shell: ls -1 /usr/bin/mysql[0-9][0-9]
+  # qui facciamo l'ipotesi forte che le istanza mysql siano sempre del tipo mysql01 mysql02 mysql03 mysql04 ,....
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  register: altri_mysql
+
+- shell: "{{ item }} -e "INSTALL PLUGIN server_audit SONAME 'server_audit.so';""
+  with_items:
+  - "{{ altri_mysql.stdout_lines }}"
+
+# configura syslog per 
+- include: include/syslog.yml
