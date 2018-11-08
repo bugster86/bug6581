@@ -3,4 +3,4 @@
 bug: 6581
 logserver_saas: saas-log1.saas.priv
 logserver_port: 518
-logserver_proto: @@
+logserver_proto: '@@'
