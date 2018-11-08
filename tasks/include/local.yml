@@ -10,3 +10,12 @@
     dir_syslog:
     - /etc/syslog.d/
     - /etc/rsyslog.d/
+
+- name: posiziono il file di rotate /etc/logrotate.d/audit_mysql
+  copy:
+    backup: true
+    src: files/logrotate_local
+    dest: /etc/logrotate.d/audit_mysql
+    owner: root
+    group: root
+    mode: 0644
