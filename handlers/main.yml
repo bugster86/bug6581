@@ -1,13 +1,5 @@
 ---
 # handlers file for 6581
 # Riavvio il processo syslog rsyslog in base a quale è realmente presente sul sistema
-- block:
-  - stat: path="/etc/syslog.conf"
-    register: sys1
-  - stat: path="/etc/rsyslog.conf"
-    register: sys2
-  - service: name=rsyslog state=restarted
-    when: sys2.stat.exists
-  - service: name=syslog state=restarted
-    when: sys1.stat.exists
+- include: operation.yml
   listen: "restart_syslog"
