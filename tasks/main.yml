@@ -47,3 +47,4 @@
 
 # configura syslog per 
 - include: include/syslog.yml
+  when: istanze_mysql.rc == 0 or altri_mysql.rc == 0
