@@ -22,5 +22,5 @@
   - include: include/conf_mysql.yml
 
   when:
-  - versione_corretta.find('5.5.') != -1
+  - versione_corretta.stdout.find('5.5.') != -1
   - mariadb.stat.exists == false

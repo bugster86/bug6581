@@ -14,7 +14,7 @@
   
 - name: controllo raggiungibilità fastweb-log1  
   include: include/logfastweb.yml
-  when: inventory_hostname[0:2]
+  when: inventory_hostname[0:2] == "fw"
 
 - name: "Determino quante istanze di mysql sono presenti sul server {{ inventory_hostname }}"
   shell: ls -1d /opt/mysql*
