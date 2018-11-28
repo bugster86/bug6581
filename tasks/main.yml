@@ -12,6 +12,8 @@
 # Se non sta girando nulla vuol dire che ci sono solo i file di mysql ma non sta girando niente
 
 - shell: ps -C mysqld
+  changed_when: false
+  failed_when: false
   check_mode: false  
   register: mysqld_active
   
