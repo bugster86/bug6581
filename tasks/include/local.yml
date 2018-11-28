@@ -15,7 +15,7 @@
       backup: true
       line: "local1.info         /var/log/audit_mysql.log"
   notify: restart_syslog
-  when: syslog_nuovo.stat.exists
+  when: syslog_nuovo.stat.exists == false
 
 - name: posiziono il file di rotate /etc/logrotate.d/audit_mysql
   copy:
