@@ -8,9 +8,13 @@
   delegate_to: localhost
   changed_when: false
 
-- name: controllo raggiungibilità .saas.priv
-  include: include/saaspriv.yml
-  when: inventory_hostname[0:2] == "fw" or inventory_hostname[0:4] == "saas"
+- name: controllo raggiungibilità saas-log1.saas.priv
+  include: include/logsaaspriv.yml
+  when: inventory_hostname[0:4] == "saas"
+  
+- name: controllo raggiungibilità fastweb-log1  
+  include: include/logfastweb.yml
+  when: inventory_hostname[0:2]
 
 - name: "Determino quante istanze di mysql sono presenti sul server {{ inventory_hostname }}"
   shell: ls -1d /opt/mysql*

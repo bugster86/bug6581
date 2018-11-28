@@ -1,0 +1,10 @@
+- name: "ping {{ logserver_fastweb }}"
+  shell: "ping -c 1 {{ logserver_fastweb }}"
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  register: ping_log_server_fastweb
+
+- block:
+  - fail: msg="Da questo server non posso raggiungere con il ping {{ logserver_fastweb }}"
+  when: ping_log_server_fastweb.rc != 0
