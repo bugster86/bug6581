@@ -30,6 +30,7 @@
 # Adesso posso caricare direttamente a runtime il plugin
 - name: carico il plugin a runtime per l'istanza mysql
   shell: mysql -e "INSTALL PLUGIN server_audit SONAME 'server_audit.so';"
+  when: istanze_mysql.rc == 0
 
 - name: recupero il riferimento per eventuali altri istanze mysql
   shell: ls -1 /usr/bin/mysql[0-9][0-9]
@@ -40,6 +41,7 @@
   register: altri_mysql
 
 - shell: "{{ item }} -e \"INSTALL PLUGIN server_audit SONAME 'server_audit.so';\""
+  when: altri_mysql.rc == 0
   with_items:
   - "{{ altri_mysql.stdout_lines }}"
 
