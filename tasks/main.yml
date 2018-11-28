@@ -17,9 +17,8 @@
   check_mode: false  
   register: mysqld_active
   
-- block:
-  - debug: msg="Su questo server non sta girando nessuna istanza di mysqld.Non devo fare nessuna operazione"
-  - meta: end_play 
+
+- fail: msg="Su questo server non sta girando nessuna istanza di mysqld.Non devo fare nessuna operazione"
   when: mysqld_active.rc != 0
 
 - name: controllo raggiungibilità saas-log1.saas.priv
