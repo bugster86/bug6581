@@ -7,6 +7,18 @@
   shell: mysql --user=ansible_update --password=$(cat /home/password_insert) -e "insert into ansible.bugs values ( '{{bug}}','$USER','$(date +%d-%m-%Y_%H:%M:%S)','{{inventory_hostname}}');"
   delegate_to: localhost
   changed_when: false
+  
+# il primo controllo che faccio è verificare se su questo server non sta girando nessuna istanza mysqld
+# Se non sta girando nulla vuol dire che ci sono solo i file di mysql ma non sta girando niente
+
+- shell: ps -C mysqld
+  check_mode: false  
+  register: mysqld_active
+  
+- block:
+  - debug: msg="Su questo server non sta girando nessuna istanza di mysqld.Non devo fare nessuna operazione"
+  - meta: end_play 
+  when: mysqld_active.rc != 0
 
 - name: controllo raggiungibilità saas-log1.saas.priv
   include: include/logsaaspriv.yml
