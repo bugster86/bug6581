@@ -18,6 +18,16 @@
      mode: 0644
      src: files/server_audit.so
      dest: "{{ item }}/install/mysql/lib/plugin/"
+    when: ansible_distribution  == 'CentOS' and ansible_distribution_major_version == "7"
+    
+  - name: "Copio il file server_audit.so in {{ item }}/install/mysql/lib/plugin/"
+    copy:
+     owner: root
+     group: root
+     mode: 0644
+     src: files/server_audit_rhel6.so
+     dest: "{{ item }}/install/mysql/lib/plugin/server_audit.so"
+    when: ansible_distribution_major_version == "6"  
 
   - include: include/conf_mysql.yml
 
