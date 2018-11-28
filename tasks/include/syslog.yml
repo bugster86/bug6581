@@ -1,16 +1,23 @@
+- set_fact: file_conf_principale_syslog=/etc/syslog.conf
+  check_mode: false
+  
+- stat: path=/etc/rsyslog.conf  
+  register: syslog_nuovo
+  
+- set_fact: file_conf_principale_syslog=/etc/rsyslog.conf
+  check_mode: false
+  when: syslog_nuovo.stat.exists  
+
+
 - name: controllo che la facility local1 non sia già presente all'interno
-  shell: "grep {{ facility | default('local1') }} {{lookup('first_found', configurazione_syslog)}} "
+  shell: "grep {{ facility | default('local1') }} {{ file_conf_principale_syslog }} "
   check_mode: false
   changed_when: false
   failed_when: false
-  vars:
-    configurazione_syslog:
-    - /etc/syslog.conf
-    - /etc/rsyslog.conf
   register: check_local1
 
 - block:
-  - debug: msg="Ho già trovato la facility {{ facility | default(local1) }} all'interno della configurazione di syslog"
+  - debug: msg="Ho già trovato la facility {{ facility | default('local1') }} all'interno della configurazione di syslog"
   - debug: msg="Per questo server devi rilanciare il comando ansible specificando i parametri facility e FACILITY."
   - debug: msg="Per esempio -e facility=local2 -e FACILITY=LOG_LOCAL2"
   - fail: msg="Non procedo oltre su questo server"
@@ -18,31 +25,26 @@
 
   # Se ho superato questo block vuol dire che posso fare la mia replace nel file di configurazione principale di rsyslog
 
-- shell: "grep /var/log/messages {{lookup('first_found', configurazione_syslog)}} | grep -v \"#\" |awk '{print $1}'"
+- shell: "grep /var/log/messages {{ file_conf_principale_syslog }} | grep -v \"#\" |awk '{print $1}'"
   check_mode: false
   failed_when: false
   changed_when: false
   register: prima
-  vars:
-    configurazione_syslog:
-    - /etc/syslog.conf
-    - /etc/rsyslog.conf
 
 - name: "introduco la direttiva {{ facility | default('local1') }}.none all'interno del file  di configurazione principale di syslog"
   replace:
     backup: true
-    path: "{{lookup('first_found', configurazione_syslog)}}"
+    path: "{{ file_conf_principale_syslog }}"
     regexp: '^(.*)/var/log/messages$'
     replace: "{{ prima.stdout }};{{ facility | default('local1')}}.none\t/var/log/messages"
   notify: restart_syslog
-  vars:
-    configurazione_syslog:
-    - /etc/syslog.conf
-    - /etc/rsyslog.conf
 
 # In questo caso le loggate devono essere inviate in tcp al server syslog saas sulla porta 518
 - include: tosaas.yml
-  when: inventory_hostname[0:2] == "fw" or inventory_hostname[0:4] == "saas"
+  when: inventory_hostname[0:4] == "saas"
+
+- include: tofastweb.yml
+  when: inventory_hostname[0:2] == "fw"  
 
 # In questo caso le loggate devono essere scritto localmente in un file /var/log/audit_mysql.log e deve essere
 # Predisposto un file di rotate

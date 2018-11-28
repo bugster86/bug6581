@@ -1,6 +1,6 @@
-- name: "Posiziono il file di configurazione syslog per spedire le loggate a {{ logserver_saas }}:{{ logserver_port}} in /etc/rsyslog.d/audit_mysql.conf"
+- name: "Posiziono il file di configurazione syslog per spedire le loggate a {{ logserver_fastweb }} in /etc/rsyslog.d/audit_mysql.conf"
   template:
-    src: files/syslog_saas.j2
+    src: files/syslog_fastweb.j2
     dest: /etc/rsyslog.d/audit_mysql.conf
     owner: root
     group: root
@@ -13,6 +13,6 @@
   lineinfile:
     path: /etc/syslog.conf
     backup: true
-    line: "local1.info               {{ logserver_proto }}{{ logserver_saas }}:{{ logserver_port }}"
+    line: "local1.info             {{ logserver_fastweb_proto }}{{ logserver_fastweb }}"
   notify: restart_syslog
   when: syslog_nuovo.stat.exists == false  
